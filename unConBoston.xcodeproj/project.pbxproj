@@ -603,6 +603,8 @@
 		27E6B2E1159E36D000280BC7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -621,6 +623,8 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = unConBoston;
+				PROVISIONING_PROFILE = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

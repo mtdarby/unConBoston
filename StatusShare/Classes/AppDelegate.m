@@ -17,18 +17,20 @@
     //Kinvey use code: You'll need to create an app on the backend and initialize it here:
     //http://docs.kinvey.com/ios-developers-guide.html#Initializing_Programmatically
     
-    NSDictionary *options = @{ KCS_PUSH_IS_ENABLED_KEY : @"YES",
-    KCS_PUSH_KEY_KEY : @"<#PUSH KEY#>",
-    KCS_PUSH_SECRET_KEY : @"<#PUSH SECRET#>",
-    KCS_PUSH_MODE_KEY : KCS_PUSH_DEBUG};
+//    NSDictionary *options = @{ KCS_PUSH_IS_ENABLED_KEY : @"YES",
+//    KCS_PUSH_KEY_KEY : @"2l-5BkPkSe6fkf2IHeUbyg",
+//    KCS_PUSH_SECRET_KEY : @"4MV50jGcQl-ik0B0TWjd7Q",
+//    KCS_PUSH_MODE_KEY : KCS_PUSH_DEBUG,
+//    KCS_TWITTER_CLIENT_KEY : @"QTyGt9aQpeZLKJoTauRjnw",
+//    KCS_TWITTER_CLIENT_SECRET : @"yUd8JGhUXQNUlHfZOFNaKpmYJcwAC3vJtbJHNarINY"};
     
-//    @{ KCS_TWITTER_CLIENT_KEY : @"VBVXyf9spzEO30DNCbWx2g",
-//    KCS_TWITTER_CLIENT_SECRET : @"IY2C9n9LvIs0TlfBYZOEA5piWol0enlWgn0pMOF4"}
+    NSDictionary *options = @{
+    KCS_TWITTER_CLIENT_KEY : @"QTyGt9aQpeZLKJoTauRjnw",
+    KCS_TWITTER_CLIENT_SECRET : @"yUd8JGhUXQNUlHfZOFNaKpmYJcwAC3vJtbJHNarINY"};
     
     (void) [[KCSClient sharedClient] initializeKinveyServiceForAppKey:@"kid_PPnCuemfeJ"
                                                         withAppSecret:@"9f99a4ff97764f8eb18e2d3eb3a1457f" 
-                                                         usingOptions:nil];
-//                                                         usingOptions:options];
+                                                         usingOptions:options];
     
     NSError *error = nil;
     BOOL setUp = [[KCSPush sharedPush] onLoadHelper:options error:&error];

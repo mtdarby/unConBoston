@@ -101,7 +101,7 @@
     _sessionTitleLabel.text = update.title;
     _sessionLeaderLabel.text = update.leader;
     _sessionLocationLabel.text = update.location;
-    _sessionTitleLabel.text = update.title;
+    _sessionTimeLabel.text = update.time;
 
     _sessionAttendeesLabel.text = [NSString stringWithFormat:@"%i", [update.attendees count]];
 
@@ -143,7 +143,7 @@
     {
         [footerView addSubview:_attendBtn];
     }
-    NSLog(@"%@", [update.attendees containsObject:user.kinveyObjectId] ? @"You are attending this session" : @"You are not attending this session yet");
+//    NSLog(@"%@", [update.attendees containsObject:user.kinveyObjectId] ? @"You are attending this session" : @"You are not attending this session yet");
     
     float editBtnY = 60;
     if ([[UIDevice currentDevice] systemVersion].floatValue >= 6)
