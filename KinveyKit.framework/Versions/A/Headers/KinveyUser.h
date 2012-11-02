@@ -12,6 +12,7 @@
 #import <Foundation/Foundation.h>
 #import "KinveyPersistable.h"
 #import "KinveyEntity.h"
+#import "KinveyHeaderInfo.h"
 
 @class KCSCollection;
 @class KCSRESTRequest;
@@ -31,6 +32,7 @@ enum {
 };
 
 typedef void (^KCSUserCompletionBlock)(KCSUser* user, NSError* errorOrNil, KCSUserActionResult result);
+typedef void (^KCSUserSendEmailBlock)(BOOL emailSent, NSError* errorOrNil);
 
 /** Social Network login providers supported for log-in
  */
@@ -92,7 +94,10 @@ typedef enum  {
 #define KCSUserAttributeGivenname @"first_name"
 /** Constant for use in querying the email field */
 #define KCSUserAttributeEmail @"email"
-
+/** Constant for querying by Facebook id 
+ @since 1.10.5
+ */
+#define KCSUserAttributeFacebookId @"_socialIdentity.facebook.id"
 
 /*! User in the Kinvey System
  
@@ -133,6 +138,11 @@ typedef enum  {
 @property (nonatomic, copy) NSString *givenName;
 /** Optional email address for the user. Publicly queryable be default. */
 @property (nonatomic, copy) NSString *email;
+/** Checks if the user has verified email (by clicking the link in the email sent via `sendEmailConfirmationForUser:withCompletionBlock:`).
+ @see sendEmailConfirmationForUser:withCompletionBlock:
+ @since 10.1.0
+ */
+@property (nonatomic, readonly) BOOL emailVerified;
 
 + (BOOL) hasSavedCredentials;
 
@@ -285,9 +295,41 @@ typedef enum  {
 - (void)setValue: (id)value forAttribute: (NSString *)attribute;
 
 /*! Called when a User Request completes successfully.
- * @return The KCSCollection to access users.
+ 
+ @return The KCSCollection to access users.
+ @deprecatedIn 1.10.2
  */
-- (KCSCollection *)userCollection;
+- (KCSCollection *)userCollection KCS_DEPRECATED(Use [KCSCollection userCollection] instead., 1.10.2);
 
+///---------------------------------------------------------------------------------------
+/// @name User email management
+///---------------------------------------------------------------------------------------
+
+/** Sends a password reset email to the specified user.
+ 
+ The user must have a valid email set in its email (`KCSUserAttributeEmail`) field, on the server, for this to work. The user will receive an email with a time-bound link to a password reset web page.
+ 
+ Until the password reset is complete, the old password remains active and valid. This allows the user to ignore the request if he remembers the old password. If too much time has passed, the email link will no longer be valid, and the user will have to initiate a new sendPasswordResetForUser:withCompletionBlock:.
+ 
+ Because we do not yet provide a username reset/reminder function, we recommend that you use email addresses as usernames. 
+ 
+ If the user knows his current password and is logged in, but wants to change the password, it can just be done with the - [KCSUser setPassword:] method followed by saving the current user to the back-end.  
+ 
+ @param username the user to send the password reset link to
+ @param completionBlock the request callback. `emailSent` is true if the email address is found and an email is sent (does not guarantee delivery). If `emailSent` is `NO`, then the `errorOrNil` value will have information as to what went wrong on the network. For security reasons, `emailSent` will be true even if the user is not found or the user does not have an associated email.
+ @since 1.10.0
+ */
++ (void) sendPasswordResetForUser:(NSString*)username withCompletionBlock:(KCSUserSendEmailBlock)completionBlock;
+
+
+/** Sends an request to confirm email address to the specified user.
+ 
+ The user must have a valid email set in its email (`KCSUserAttributeEmail`) field, on the server, for this to work. The user will receive an email with a time-bound link to a verification web page.
+ 
+ @param username the user to send the password reset link to
+ @param completionBlock the request callback. `emailSent` is true if the email address is found and an email is sent (does not guarantee delivery). If `emailSent` is `NO`, then the `errorOrNil` value will have information as to what went wrong on the network. For security reasons, `emailSent` will be true even if the user is not found or the user does not have an associated email.
+ @since 1.10.1
+ */
++ (void) sendEmailConfirmationForUser:(NSString*)username withCompletionBlock:(KCSUserSendEmailBlock)completionBlock;
 
 @end

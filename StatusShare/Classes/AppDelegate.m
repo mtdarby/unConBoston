@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+#import <KinveyKit/KCSPush.h>
 #import <KinveyKit/KinveyKit.h>
 
 @implementation AppDelegate
@@ -27,13 +28,16 @@
     
     (void) [[KCSClient sharedClient] initializeKinveyServiceForAppKey:@"kid_PPnCuemfeJ"
                                                         withAppSecret:@"9f99a4ff97764f8eb18e2d3eb3a1457f" 
-                                                         usingOptions:nil];
+                                                         usingOptions:@{ KCS_TWITTER_CLIENT_KEY : @"VBVXyf9spzEO30DNCbWx2g",
+                                                                 KCS_TWITTER_CLIENT_SECRET : @"IY2C9n9LvIs0TlfBYZOEA5piWol0enlWgn0pMOF4"}];
 //                                                         usingOptions:options];
     
     NSError *error = nil;
     BOOL setUp = [[KCSPush sharedPush] onLoadHelper:options error:&error];
     //TODO: handle error if setUp == NO
 
+    [KCSClient configureLoggingWithNetworkEnabled:YES debugEnabled:YES traceEnabled:YES warningEnabled:YES errorEnabled:YES];
+    
     return YES;
 }
 

@@ -54,7 +54,7 @@
  @deprecated Use onLoadHelper:error: instead.
  @depcratedIn 1.9
  */
-- (void)onLoadHelper: (NSDictionary *)options DEPRECATED_ATTRIBUTE;
+- (void)onLoadHelper: (NSDictionary *)options __attribute__((deprecated("use onLoadHelper:error: instead")));
 
 /*! Start the Push Service
  
@@ -150,21 +150,6 @@
 - (void)resetPushBadge;
 
 // - (void) exposeSettingsViewInView: (UIViewController *)parentViewController
-
-///---------------------------------------------------------------------------------------
-/// @name Device Properties
-///---------------------------------------------------------------------------------------
-/*! The current session's token for this device to receive notifications */
-@property (nonatomic, retain, readonly) NSData *deviceToken;
-
-/*! Return the device's token as a string
- 
- Return the current session's device token for push as an NSString.
- 
- @return The NSString representing the device token.
- 
- */
-- (NSString *)deviceTokenString;
 
 
 @end

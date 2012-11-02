@@ -171,6 +171,7 @@
                                  if (errorOrNil) {
                                      //handle error
                                  }
+                                 [self handeLogin:errorOrNil];
                              }];
         }
     }];
