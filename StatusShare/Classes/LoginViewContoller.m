@@ -34,6 +34,7 @@
     [self setPasswordTextField:nil];
     [self setCreateAccountButton:nil];
     [self setFacebookLoginButton:nil];
+    [self setTwitterLoginButton:nil];
     [super viewDidUnload];
 }
 
@@ -138,6 +139,10 @@
 - (IBAction)loginWithFacebook:(id)sender
 {
     AppDelegate* delegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    delegate.session = [[FBSession alloc] initWithAppID:@"293567604077027"
+                                        permissions:nil
+                                    urlSchemeSuffix:nil
+                                 tokenCacheStrategy:nil];
     FBSession* session = [delegate session];
 
     // if the session isn't open, let's open it now and present the login UX to the user
@@ -154,6 +159,28 @@
         }];
     }
 }
+
+- (IBAction)loginWithTwitter:(id)sender
+{
+    
+    [KCSUser getAccessDictionaryFromTwitterFromPrimaryAccount:^(NSDictionary *accessDictOrNil, NSError *errorOrNil) {
+        if (accessDictOrNil) {
+            [KCSUser loginWithWithSocialIdentity:KCSSocialIDTwitter
+                                accessDictionary:accessDictOrNil
+                             withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+                                 if (errorOrNil) {
+                                     //handle error
+                                 }
+                             }];
+        }
+    }];
+    NSLog(@"I tried to login with Twitter");
+    
+//    [KCSUser loginWithSocialIdentity:KCSSocialIDTwitter
+//                    accessDictionary:{ KCSUserAccessTokenKey : <# Twitter OAuth Token #>, KCSUserAccessTokenSecretKey : <# Twitter OAuth Token Secret #>}
+//                 withCompletionBlock:<# completion block #>];
+}
+
       
 - (IBAction)createAccount:(id)sender
 {

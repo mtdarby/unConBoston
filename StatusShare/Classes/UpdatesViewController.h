@@ -7,10 +7,13 @@
 
 #import <UIKit/UIKit.h>
 #import "PullRefreshTableViewController.h"
+#import "KinveyFriendsUpdate.h"
 
 @interface UpdatesCell : UITableViewCell 
 @end
 
 @interface UpdatesViewController : PullRefreshTableViewController <UITextFieldDelegate>
+
+- (void)removeUpdate:(KinveyFriendsUpdate *)update;
 
 @end

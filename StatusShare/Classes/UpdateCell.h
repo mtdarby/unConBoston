@@ -12,15 +12,14 @@
 @class KinveyFriendsUpdate;
 
 @interface UpdateCell : UITableViewCell
-@property (retain, nonatomic) IBOutlet UILabel *nameLabel;
-@property (retain, nonatomic)
-IBOutlet UILabel *textLabel;
+@property (retain, nonatomic) UILabel *nameLabel;
+@property (retain, nonatomic) UILabel *textLabel;
+//
+//@property (retain, nonatomic) UILabel* timeLabel;
 
-@property (retain, nonatomic) UILabel* timeLabel;
-
-@property (retain, nonatomic) UIImageView* avatar;
+//@property (retain, nonatomic) UIImageView* avatar;
 //@property (retain, nonatomic) UIImageView* thumbnailView;
-@property (retain, nonatomic) UIImageView* pinView;
+//@property (retain, nonatomic) UIImageView* pinView;
 
 - (void) setUpdate:(KinveyFriendsUpdate*)update;
 

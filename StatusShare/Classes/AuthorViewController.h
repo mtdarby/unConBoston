@@ -6,11 +6,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KinveyFriendsUpdate.h"
+#import "UpdatesViewController.h"
 
 @interface AuthorViewController : UITableViewController
+{
+    __weak IBOutlet UILabel *_sessionTitleLabel;
+    __weak IBOutlet UILabel *_sessionLeaderLabel;
+    __weak IBOutlet UILabel *_sessionLocationLabel;
+    __weak IBOutlet UILabel *_sessionTimeLabel;
+    __weak IBOutlet UILabel *_sessionAttendeesLabel;
+    __weak IBOutlet UILabel *_sessionDescriptionLabel;
+}
 
-@property (nonatomic) NSString* author;
-@property (nonatomic) UIImage* image;
+@property (nonatomic) KinveyFriendsUpdate* update;
+@property (nonatomic) UpdatesViewController *updatesViewController;
+
 
 
 @end

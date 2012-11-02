@@ -14,8 +14,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *createAccountButton;
 @property (weak, nonatomic) IBOutlet UIButton *facebookLoginButton;
+@property (weak, nonatomic) IBOutlet UIButton *twitterLoginButton;
 
 - (IBAction)login:(id)sender;
 - (IBAction)loginWithFacebook:(id)sender;
+- (IBAction)loginWithTwitter:(id)sender;
 
 @end

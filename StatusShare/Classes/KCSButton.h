@@ -9,4 +9,6 @@
 /* A SHINY rounded-rect, gradient button */
 @interface KCSButton : UIButton
 
+- (id)initWithFrame:(CGRect)frame andColor:(UIColor *)color;
+
 @end

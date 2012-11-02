@@ -16,20 +16,39 @@
 {
     //Kinvey use code: You'll need to create an app on the backend and initialize it here:
     //http://docs.kinvey.com/ios-developers-guide.html#Initializing_Programmatically
+    
+    NSDictionary *options = @{ KCS_PUSH_IS_ENABLED_KEY : @"YES",
+    KCS_PUSH_KEY_KEY : @"<#PUSH KEY#>",
+    KCS_PUSH_SECRET_KEY : @"<#PUSH SECRET#>",
+    KCS_PUSH_MODE_KEY : KCS_PUSH_DEBUG};
+    
+//    @{ KCS_TWITTER_CLIENT_KEY : @"VBVXyf9spzEO30DNCbWx2g",
+//    KCS_TWITTER_CLIENT_SECRET : @"IY2C9n9LvIs0TlfBYZOEA5piWol0enlWgn0pMOF4"}
+    
     (void) [[KCSClient sharedClient] initializeKinveyServiceForAppKey:@"kid_PPnCuemfeJ"
                                                         withAppSecret:@"9f99a4ff97764f8eb18e2d3eb3a1457f" 
                                                          usingOptions:nil];
+//                                                         usingOptions:options];
     
-   
-    //NOTE: the FB APP ID also has to go in the url scheme in StatusShare-Info.plist so the FB callback has a place to go
-    self.session = [[FBSession alloc] initWithAppID:@"293567604077027"
-                                   permissions:nil
-                               urlSchemeSuffix:nil
-                            tokenCacheStrategy:nil];
+    NSError *error = nil;
+    BOOL setUp = [[KCSPush sharedPush] onLoadHelper:options error:&error];
+    //TODO: handle error if setUp == NO
 
     return YES;
 }
 
+#pragma - mark Push Methods
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [[KCSPush sharedPush] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    // Additional registration goes here (if neeeded)
+}
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[KCSPush sharedPush] application:application didReceiveRemoteNotification:userInfo];
+    // Additional push notification handling code should be performed here
+}
+
+
+#pragma - mark Other Methods
 // FBSample logic
 // The native facebook application transitions back to an authenticating application when the user
 // chooses to either log in, or cancel. The url passed to this method contains the token in the
@@ -73,6 +92,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[KCSPush sharedPush] onUnloadHelper];
 }
 
 @end

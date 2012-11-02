@@ -8,10 +8,9 @@
 #import "WriteUpdateViewController.h"
 
 #import <QuartzCore/QuartzCore.h>
-#import <CoreLocation/CoreLocation.h>
 #import <KinveyKit/CLLocation+Kinvey.h>
 
-#import "KinveyFriendsUpdate.h"
+
 #import "UIColor+KinveyHelpers.h"
 
 @interface WriteUpdateViewController ()
@@ -21,48 +20,37 @@
     NSArray* _sessionTimes;
     
 }
-@property (nonatomic, retain) id<KCSStore> updateStore;
-@property (nonatomic, retain) UIImage* attachedImage;
-@property (nonatomic, retain) CLLocationManager* locationManager;
+@property (nonatomic, retain) id<KCSStore> unconSessionStore;
 @end
 
 @implementation WriteUpdateViewController
-//@synthesize bottomToolbar;
+
 @synthesize scrollView;
 @synthesize sessionTitle;
 @synthesize sessionLeader;
+@synthesize sessionLocation;
 @synthesize sessionTime;
 @synthesize sessionDescription;
 @synthesize mainView;
 @synthesize postButton;
-//@synthesize geoButtonItem;
-@synthesize updateStore;
-@synthesize attachedImage;
-@synthesize locationManager;
+@synthesize unconSessionStore;
 
+@synthesize unconSession;
+@synthesize newSession;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    public = YES;
     
     //Kinvey use code: create a new collection with a linked data store
     // no KCSStoreKeyOfflineSaveDelegate is specified
     KCSCollection* collection = [KCSCollection collectionFromString:@"Updates" ofClass:[KinveyFriendsUpdate class]];
-    self.updateStore = [KCSLinkedAppdataStore storeWithOptions:@{ KCSStoreKeyResource : collection, KCSStoreKeyCachePolicy : @(KCSCachePolicyBoth), KCSStoreKeyUniqueOfflineSaveIdentifier : @"WriteUpdateViewController" , KCSStoreKeyOfflineSaveDelegate : self }];
+    self.unconSessionStore = [KCSLinkedAppdataStore storeWithOptions:@{ KCSStoreKeyResource : collection, KCSStoreKeyCachePolicy : @(KCSCachePolicyBoth), KCSStoreKeyUniqueOfflineSaveIdentifier : @"WriteUpdateViewController" , KCSStoreKeyOfflineSaveDelegate : self }];
 
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardUpdated:) name:UIKeyboardWillChangeFrameNotification object:nil];
     [self registerForKeyboardNotifications];
     
     //Kinvey use code: watch for network reachability to change so we can update the UI make a post able to send. 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kKCSReachabilityChangedNotification object:nil];
-    
-    if ([CLLocationManager locationServicesEnabled]) {
-        //set up the location manger
-        self.locationManager = [[CLLocationManager alloc] init];
-        locationManager.delegate = self; //we don't actually care about updates since only the current loc is used
-        [locationManager startUpdatingLocation];
-    }
     
     sessionDescription.layer.cornerRadius = 8.0f;
     sessionDescription.clipsToBounds = YES;
@@ -71,44 +59,63 @@
     
     sessionTitle.delegate = self;
     sessionLeader.delegate = self;
+    sessionLocation.delegate = self;
     sessionTime.delegate = self;
     sessionDescription.delegate = self;
+    
+    if (unconSession == nil) {
+        NSLog(@"creating new session");
+        unconSession = [[KinveyFriendsUpdate alloc] init];
+    } else {
+        [self loadData];
+    }
+    
+    _sessionTimes = [[NSArray alloc] initWithObjects:
+                     @"Session I (10:15AM - 11:15AM)",
+                     @"Session II (11:30AM - 12:30PM)",
+                     @"Session III (1:15PM - 2:15PM)",
+                     @"Session IV (2:30PM - 3:30PM)",
+                     nil];
 }
 
 - (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 
-    [self.locationManager stopUpdatingLocation];
+    [super viewDidUnload];
     
-    [self setLocationManager:nil];
     [self setSessionTitle:nil];
     [self setMainView:nil];
-//    [self setBottomToolbar:nil];
-//    [self setBottomToolbar:nil];
     [self setPostButton:nil];
-//    [self setGeoButtonItem:nil];
     [self setSessionLeader:nil];
+    [self setSessionLocation:nil];
     [self setSessionTime:nil];
     [self setSessionDescription:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
     
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    [self.sessionTitle becomeFirstResponder];
+    if (newSession) {
+        [self.sessionTitle becomeFirstResponder];
+    }
     
     //Kinvey use code: only enable the post button if Kinvey is reachable
     self.postButton.enabled = [[[KCSClient sharedClient] networkReachability] isReachable];
-    
-//    self.geoButtonItem.enabled = [CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)loadData
+{
+    sessionTitle.text = unconSession.title;
+    sessionLeader.text = unconSession.leader;
+    sessionLocation.text = unconSession.location;
+    sessionTime.text = unconSession.time;
+    sessionDescription.text = unconSession.description;
 }
 
 #pragma mark - network
@@ -142,8 +149,8 @@
     scrollView.scrollIndicatorInsets = contentInsets;
     
     if (_activeField == nil) {
-        NSLog(@"scroll to height");
-        CGPoint scrollPoint = CGPointMake(0.0, 130.0);
+        NSLog(@"active field nil -> scrolling to description");
+        CGPoint scrollPoint = CGPointMake(0.0, 180.0);
         [scrollView setContentOffset:scrollPoint animated:YES];
     }
 }
@@ -159,7 +166,7 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     _activeField = textField;
-    [self createPickerViewWithTag:textField.tag];
+    [self createPickerView];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -175,17 +182,14 @@
     }
     else if (textField.tag == sessionLeader.tag)
     {
-        [sessionTime becomeFirstResponder];
+        [sessionLocation becomeFirstResponder];
         
     }
-//    else if (textField.tag == sessionTime.tag)
-//    {
-//        [sessionDescription becomeFirstResponder];
-//        
-//        CGPoint scrollPoint = CGPointMake(0.0, 130.0);
-//        [scrollView setContentOffset:scrollPoint animated:YES];
-//        
-//    }
+    else if (textField.tag == sessionLocation.tag)
+    {
+        [sessionTime becomeFirstResponder];
+    }
+
     return YES;
 }
 
@@ -212,31 +216,31 @@
 }
 
 #pragma mark - Picker View
--(void)createPickerViewWithTag:(int)tag
+-(void)createPickerView
 {
-    //create Picker Here
     CGRect pickerFrame = CGRectMake(0, 40, 0, 0);
     
     UIPickerView *pickerView = [[UIPickerView alloc] initWithFrame:pickerFrame];
     pickerView.showsSelectionIndicator = YES;
     pickerView.dataSource = self;
     pickerView.delegate = self;
-    pickerView.tag = tag + 2;
     
     int row = 0;
-    row = 0; // fix to match selected value
-    [pickerView selectRow:row inComponent:0 animated:YES];
+    if (sessionTime.text.length != 0) {
+        row = [_sessionTimes indexOfObject:sessionTime.text];
+    }
+    if (row != NSNotFound) {
+        [pickerView selectRow:row inComponent:0 animated:YES];
+    } else {
+        [pickerView selectRow:0 inComponent:0 animated:YES];
+    }
     [sessionTime setInputView:pickerView];
         
 }
-
-// returns the number of 'columns' to display.
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
     return 1;
 }
-
-// returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     return 4;
@@ -244,12 +248,6 @@
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    _sessionTimes = [[NSArray alloc] initWithObjects:
-                     @"Session I (10:15AM - 11:15AM)",
-                     @"Session II (11:30AM - 12:30PM)",
-                     @"Session III (1:15PM - 2:15PM)",
-                     @"Session IV (2:30PM - 3:30PM)",
-                     nil];
     
     return [_sessionTimes objectAtIndex:row];
 
@@ -260,9 +258,9 @@
     sessionTime.text = [_sessionTimes objectAtIndex:row];
     [sessionDescription becomeFirstResponder];
     
-    CGPoint scrollPoint = CGPointMake(0.0, 130.0);
+    NSLog(@"time selected -> scrolling to description");
+    CGPoint scrollPoint = CGPointMake(0.0, 180.0);
     [scrollView setContentOffset:scrollPoint animated:YES];
-    
 }
 
 
@@ -276,42 +274,33 @@
 {
     if (self.sessionTitle.text.length > 0)
     {
-        KinveyFriendsUpdate* update = [[KinveyFriendsUpdate alloc] init];
-        update.title = sessionTitle.text;
-        update.userDate = [NSDate date];
+        unconSession.title = sessionTitle.text;
+        unconSession.userDate = [NSDate date];
         
         if (self.sessionLeader.text.length > 0)
         {
-            update.leader = sessionLeader.text;
+            unconSession.leader = sessionLeader.text;
+        }
+        
+        if (self.sessionLocation.text.length > 0)
+        {
+            unconSession.location = sessionLocation.text;
         }
         
         if (self.sessionTime.text.length > 0)
         {
-            update.time = sessionTime.text;
+            unconSession.time = sessionTime.text;
         }
         
         if (self.sessionDescription.text.length > 0)
         {
-            update.description = sessionDescription.text;
+            unconSession.description = sessionDescription.text;
         }
         
-        //remove below
-        if (self.attachedImage != nil) {
-            update.attachment = self.attachedImage;
-        }
-        if (!public) {
-            if (!update.meta) {
-                update.meta = [[KCSMetadata alloc] init];
-            }
-            [update.meta setGloballyReadable:NO];
-        }
-        if (location && [CLLocationManager locationServicesEnabled]) {
-            CLLocation* l = [self.locationManager location];
-            update.location = [l kinveyValue];
-        }
-        
-        //Kinvey use code: add a new update to the updates collection
-        [updateStore saveObject:update withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+        NSMutableSet* attendees = [[NSMutableSet alloc] init];
+        unconSession.attendees = attendees;
+
+        [unconSessionStore saveObject:unconSession withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
             if (errorOrNil == nil) {
                 sessionTitle.text = @"";
                 [self cancel:nil];
@@ -320,12 +309,13 @@
                 NSString* title = wasNetworkError ? NSLocalizedString(@"There was a netowrk error.", @"network error title"): NSLocalizedString(@"An error occurred.", @"Generic error message");
                 NSString* message = wasNetworkError ? NSLocalizedString(@"Please wait a few minutes and try again.", @"try again error message") : [errorOrNil localizedDescription];
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title
-                                                                message:message                                                           delegate:self 
-                                                      cancelButtonTitle:NSLocalizedString(@"OK", @"OK") 
+                                                                message:message                                                           delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", @"OK")
                                                       otherButtonTitles:nil];
                 [alert show];
             }
         } withProgressBlock:nil];
+    
     } else {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Did you forget something?"
@@ -339,66 +329,6 @@
     }
     
 }
-
-//- (IBAction)takePicture:(id)sender 
-//{
-//    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
-//    imagePicker.delegate = self;
-//    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-//    } else {
-//        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//    }
-//    
-//    [self presentModalViewController:imagePicker animated:YES];
-//}
-
-#pragma mark - pictures
-
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-//{
-//    self.attachedImage = nil;
-//    [self dismissModalViewControllerAnimated:YES];
-//}
-//
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
-//{
-//    [self dismissModalViewControllerAnimated:YES];
-//    self.attachedImage = image;
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        CGFloat scale = [self.view.window.screen scale];
-//        CGSize size = CGSizeMake(24., 24.);
-//        UIGraphicsBeginImageContextWithOptions(size, YES, scale);
-//        CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
-//        [image drawInRect:CGRectMake(0., 0., size.width, size.height)];
-//        UIImage* thumb = UIGraphicsGetImageFromCurrentImageContext();
-//        UIGraphicsEndImageContext();
-//        
-//        UIImageView* thumbView = [[UIImageView alloc] initWithImage:thumb];
-//        thumbView.userInteractionEnabled = YES;
-//        UIBarButtonItem* button = [[UIBarButtonItem alloc] initWithCustomView:thumbView];
-//        button.target = self;
-//        button.action = @selector(takePicture:);
-////        NSMutableArray* oldItems = [NSMutableArray arrayWithArray:self.bottomToolbar.items];
-////        [oldItems replaceObjectAtIndex:oldItems.count - 1 withObject:button];
-////        [self.bottomToolbar setItems:oldItems animated:YES];
-//    });
-//}
-
-//- (IBAction)togglePrivacy:(id)sender 
-//{
-//    public = !public;
-//    UIBarButtonItem* item = sender;
-//    [item setImage:[UIImage imageNamed:(public ? @"unlock" : @"lock")]];
-//}
-//
-//- (IBAction)toggleGeolocation:(id)sender
-//{
-//    location = !location;
-//    UIBarButtonItem* item = sender;
-//    item.tintColor = location ? [[[UIColor greenColor] darkerColor] colorWithAlphaComponent:0.5]: nil;
-//}
 
 #pragma mark - Offline Save Delegate
 

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "27E6B2A9159E36D000280BC7"
-               BuildableName = "StatusShare.app"
-               BlueprintName = "StatusShare"
-               ReferencedContainer = "container:StatusShare.xcodeproj">
+               BuildableName = "unConBoston.app"
+               BlueprintName = "unConBoston"
+               ReferencedContainer = "container:unConBoston.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "27E6B2A9159E36D000280BC7"
-            BuildableName = "StatusShare.app"
-            BlueprintName = "StatusShare"
-            ReferencedContainer = "container:StatusShare.xcodeproj">
+            BuildableName = "unConBoston.app"
+            BlueprintName = "unConBoston"
+            ReferencedContainer = "container:unConBoston.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "27E6B2A9159E36D000280BC7"
-            BuildableName = "StatusShare.app"
-            BlueprintName = "StatusShare"
-            ReferencedContainer = "container:StatusShare.xcodeproj">
+            BuildableName = "unConBoston.app"
+            BlueprintName = "unConBoston"
+            ReferencedContainer = "container:unConBoston.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "27E6B2A9159E36D000280BC7"
-            BuildableName = "StatusShare.app"
-            BlueprintName = "StatusShare"
-            ReferencedContainer = "container:StatusShare.xcodeproj">
+            BuildableName = "unConBoston.app"
+            BlueprintName = "unConBoston"
+            ReferencedContainer = "container:unConBoston.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -8,6 +8,9 @@
 #import "UIColor+KinveyHelpers.h"
 
 @implementation KCSButton
+{
+    UIColor *_buttonColor;
+}
 
 - (void) commonInit
 {
@@ -22,6 +25,7 @@
     [self setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.2] forState:UIControlStateDisabled];
     
     [self addObserver:self forKeyPath:@"highlighted" options:0 context:nil];
+    _buttonColor = [UIColor innovationGreen];
 }
 
 - (id) init
@@ -47,6 +51,15 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self commonInit];
+    }
+    return self;
+}
+- (id)initWithFrame:(CGRect)frame andColor:(UIColor *)color
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self commonInit];
+        _buttonColor = color;
     }
     return self;
 }
@@ -76,13 +89,13 @@
     UIColor* strokeColor = [UIColor blackColor];
     NSArray* colors = nil;
     if (self.enabled == NO) {
-        colors = [NSArray arrayWithObjects:(id)[[[UIColor innovationGreen] darkerColor] colorWithAlphaComponent:0.5].CGColor, (id) [[UIColor innovationGreen] colorWithAlphaComponent:0.5].CGColor, (id)[[[UIColor innovationGreen] lighterColor] colorWithAlphaComponent:0.5].CGColor, nil];
+        colors = [NSArray arrayWithObjects:(id)[[_buttonColor darkerColor] colorWithAlphaComponent:0.5].CGColor, (id) [_buttonColor colorWithAlphaComponent:0.5].CGColor, (id)[[_buttonColor lighterColor] colorWithAlphaComponent:0.5].CGColor, nil];
         strokeColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
     } else if (self.highlighted == YES) {
-        colors = [NSArray arrayWithObjects:(id)[UIColor innovationGreen].CGColor, (id)[UIColor innovationGreen].CGColor, (id)[[UIColor innovationGreen] darkerColor].CGColor, nil];
+        colors = [NSArray arrayWithObjects:(id)_buttonColor.CGColor, (id)_buttonColor.CGColor, (id)[_buttonColor darkerColor].CGColor, nil];
         
     } else {
-        colors = [NSArray arrayWithObjects:(id)[[UIColor innovationGreen] darkerColor].CGColor, (id)[UIColor innovationGreen].CGColor, (id)[[UIColor innovationGreen] lighterColor].CGColor, nil];
+        colors = [NSArray arrayWithObjects:(id)[_buttonColor darkerColor].CGColor, (id)_buttonColor.CGColor, (id)[_buttonColor lighterColor].CGColor, nil];
     }
 
     
