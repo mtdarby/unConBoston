@@ -13,6 +13,7 @@
 #ifndef KinveyKit_h
 #define KinveyKit_h
 
+#import "KCSPush.h"
 #import "KCSClient.h"
 #import "KinveyAnalytics.h"
 #import "KCSEntityDict.h"

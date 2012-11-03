@@ -64,7 +64,6 @@
     sessionDescription.delegate = self;
     
     if (unconSession == nil) {
-        NSLog(@"creating new session");
         unconSession = [[KinveyFriendsUpdate alloc] init];
     } else {
         [self loadData];
@@ -149,7 +148,6 @@
     scrollView.scrollIndicatorInsets = contentInsets;
     
     if (_activeField == nil) {
-        NSLog(@"active field nil -> scrolling to description");
         CGPoint scrollPoint = CGPointMake(0.0, 180.0);
         [scrollView setContentOffset:scrollPoint animated:YES];
     }
@@ -258,7 +256,6 @@
     sessionTime.text = [_sessionTimes objectAtIndex:row];
     [sessionDescription becomeFirstResponder];
     
-    NSLog(@"time selected -> scrolling to description");
     CGPoint scrollPoint = CGPointMake(0.0, 180.0);
     [scrollView setContentOffset:scrollPoint animated:YES];
 }

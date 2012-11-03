@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "KinveyHeaderInfo.h"
 
 typedef enum
 {
@@ -48,9 +47,7 @@ typedef enum
     // Internal Operators
     kKCSWithin = 17000,
     kKCSMulti = 17001,
-    kKCSOptions = 17002,
-    kKCSExists = 17003,
-    kKCSType = 17004
+    kKCSOptions = 17002
     
 } KCSQueryConditional;
 
@@ -282,46 +279,23 @@ typedef enum {
  */
 + (KCSQuery *)queryNegatingQuery:(KCSQuery *)query;
 
-/*! Create a new query looking for an unset value in a field.
+/*! Create a new query looking for a nil value in a field.
  
- This filters all entries that do not have a value set for the field. I.e. loaded classes will have 'nil' set for that property.
+ This filters all entries that match 'nil'
  
  @param field The field in Kinvey to query on.
 
  @return The new KCSQuery object (autoreleased).
- @deprecated This method is ambiguous and is superceeded by the following:
  
-    * To find values that have been set to `null` : [KCSQuery queryOnField:field withExactMatchForValue:[NSNull null]];
-    * To find values that empty or unset: [KCSQuery queryForEmptyValueInField:];
-    * To find either `null` or empty or unset: [KCSQuery queryForEmptyOrNullValueInField:];
- 
- @deprecatedIn 1.11.0
- @see queryForEmptyOrNullValueInField:
- @see queryForEmptyValueInField:
  */
-+ (KCSQuery *)queryForNilValueInField: (NSString *)field KCS_DEPRECATED(queryForNilValueInField is ambiguous; use exact match on NSNull; queryForEmptyValueInField; or queryForEmptyOrNullValueInField, 1.11.0);
++ (KCSQuery *)queryForNilValueInField: (NSString *)field;
 
-/** Create a query that matches entities where the field is empty or unset.
+/*! Create a new query.
  
- @param field the backend field to query.
- @return an autoreleased KCSQuery object.
- @since 1.11.0
- @see queryForEmptyOrNullValueInField:
- */
-+ (KCSQuery*) queryForEmptyValueInField:(NSString*)field;
-
-/** Create a query that matches entities where the field is empty or unset or has been excplicitly set to `null`.
- 
- @param field the backend field to query.
- @return an autoreleased KCSQuery object.
- @since 1.11.0
- @see queryForEmptyValueInField:
- */
-+ (KCSQuery*) queryForEmptyOrNullValueInField:(NSString*)field;
-
-/*! Create a new query that matches all entites.
+ Creates an empty query.
  
  @return The new KCSQuery object (autoreleased).
+ 
  */
 + (KCSQuery *)query;
 

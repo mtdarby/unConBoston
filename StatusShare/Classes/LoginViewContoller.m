@@ -170,12 +170,15 @@
                              withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
                                  if (errorOrNil) {
                                      //handle error
+                                     NSLog(@"%@", errorOrNil);
                                  }
                                  [self handeLogin:errorOrNil];
                              }];
         }
+        NSLog(@"%@", errorOrNil);
     }];
     NSLog(@"I tried to login with Twitter");
+    
     
 //    [KCSUser loginWithSocialIdentity:KCSSocialIDTwitter
 //                    accessDictionary:{ KCSUserAccessTokenKey : <# Twitter OAuth Token #>, KCSUserAccessTokenSecretKey : <# Twitter OAuth Token Secret #>}
