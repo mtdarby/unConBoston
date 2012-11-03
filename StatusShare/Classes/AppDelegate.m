@@ -37,8 +37,6 @@
     BOOL setUp = [[KCSPush sharedPush] onLoadHelper:options error:&error];
     //TODO: handle error if setUp == NO
 
-    [KCSClient configureLoggingWithNetworkEnabled:YES debugEnabled:YES traceEnabled:YES warningEnabled:YES errorEnabled:YES];
-    
     return YES;
 }
 
