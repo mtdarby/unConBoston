@@ -25,10 +25,6 @@
 
 @interface UpdatesViewController ()
 @property (nonatomic, retain) NSArray* updates;
-//@property (nonatomic, retain) NSArray* session1;
-//@property (nonatomic, retain) NSArray* session2;
-//@property (nonatomic, retain) NSArray* session3;
-//@property (nonatomic, retain) NSArray* session4;
 @property (nonatomic, retain) NSMutableArray* sessions;
 @property (nonatomic, retain) KCSCachedStore* updateStore;
 @property (nonatomic, retain) NSArray* sessionTimes;
@@ -47,6 +43,8 @@
     // set backgound view
     self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chalkboard.png"]];
     
+    //Kinvey use code: watch for network reachability to change so we can update the UI make a post able to send.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kKCSReachabilityChangedNotification object:nil];
     
     KCSCollection* collection = [KCSCollection collectionFromString:@"Updates" ofClass:[KinveyFriendsUpdate class]];
     self.updateStore = [KCSLinkedAppdataStore storeWithOptions:[NSDictionary dictionaryWithObjectsAndKeys:collection, KCSStoreKeyResource, [NSNumber numberWithInt:KCSCachePolicyBoth], KCSStoreKeyCachePolicy, nil]];
@@ -58,8 +56,10 @@
     }
     
     self.sessionTimes = @[@"Session I (10:15AM - 11:15AM)", @"Session II (11:30AM - 12:30PM)", @"Session III (1:15PM - 2:15PM)",@"Session IV (2:30PM - 3:30PM)"];
+    
+    KCSUser *user = [[KCSClient sharedClient] currentUser];
+    [user loadWithDelegate:self];
 }
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -74,12 +74,22 @@
     UIBarButtonItem* logoutButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"Logout", @"Logout button") style:UIBarButtonItemStylePlain target:self action:@selector(logout)];
     self.navigationItem.leftBarButtonItem = logoutButton;
     
+    // Simulate reachabilty changing on view load to set to correct state
+    [self reachabilityChanged:nil];
+    
     [self updateList];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - network
+- (void) reachabilityChanged:(NSNotification*) note
+{
+    self.navigationItem.leftBarButtonItem.enabled = [[[KCSClient sharedClient] networkReachability] isReachable];
+    self.navigationItem.rightBarButtonItem.enabled = [[[KCSClient sharedClient] networkReachability] isReachable];
 }
 
 - (KinveyFriendsUpdate*) updateAtIndex:(NSUInteger)index
@@ -99,8 +109,6 @@
     else if ([segue.destinationViewController isKindOfClass:[WriteUpdateViewController class]])
     {
         [segue.destinationViewController setNewSession:YES];
-//        [segue.destinationViewController setUnconSession:[[KinveyFriendsUpdate alloc] init]];
-//        [segue.destinationViewController setUnconsession:[[KinveyFriendsUpdate alloc] init]];
     }
 }
 - (void)removeUpdate:(KinveyFriendsUpdate *)update
@@ -225,11 +233,27 @@
 {
     KCSQuerySortModifier* sortByTitle = [[KCSQuerySortModifier alloc] initWithField:@"title" inDirection:kKCSAscending];
 
+    __block BOOL detectedError = NO;
     
     KCSQuery* query1 = [KCSQuery queryOnField:@"time" withExactMatchForValue:@"Session I (10:15AM - 11:15AM)"];
     [query1 addSortModifier:sortByTitle]; //sort the return by the date field
     [updateStore queryWithQuery:query1 withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
-        if (objectsOrNil) {
+        BOOL displayAlert = NO;
+        if (errorOrNil) {
+            @synchronized([KCSClient sharedClient])
+            {
+                if (!detectedError) {
+                    detectedError = YES;
+                    displayAlert = YES;
+                }
+            }
+            if (displayAlert) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Connection" message:@"There no internect connection available, please retry later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+            }
+        }
+        else
+        {
             [self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
             [self.sessions[0] setArray:objectsOrNil];
             [self.tableView reloadData];
@@ -239,9 +263,23 @@
     KCSQuery* query2 = [KCSQuery queryOnField:@"time" withExactMatchForValue:@"Session II (11:30AM - 12:30PM)"];
     [query2 addSortModifier:sortByTitle];
     [updateStore queryWithQuery:query2 withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
-        if (objectsOrNil) {
+        BOOL displayAlert = NO;
+        if (errorOrNil) {
+            @synchronized([KCSClient sharedClient])
+            {
+                if (!detectedError) {
+                    detectedError = YES;
+                    displayAlert = YES;
+                }
+            }
+            if (displayAlert) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Connection" message:@"There no internect connection available, please retry later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+            }
+        }
+        else {
             [self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
-            [self.sessions replaceObjectAtIndex:1 withObject:objectsOrNil];
+            [self.sessions[1] setArray:objectsOrNil];
             [self.tableView reloadData];
         }
     } withProgressBlock:nil];
@@ -249,9 +287,23 @@
     KCSQuery* query3 = [KCSQuery queryOnField:@"time" withExactMatchForValue:@"Session III (1:15PM - 2:15PM)"];
     [query3 addSortModifier:sortByTitle];
     [updateStore queryWithQuery:query3 withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
-        if (objectsOrNil) {
+        BOOL displayAlert = NO;
+        if (errorOrNil) {
+            @synchronized([KCSClient sharedClient])
+            {
+                if (!detectedError) {
+                    detectedError = YES;
+                    displayAlert = YES;
+                }
+            }
+            if (displayAlert) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Connection" message:@"There no internect connection available, please retry later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+            }
+        }
+        else {
             [self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
-            [self.sessions replaceObjectAtIndex:2 withObject:objectsOrNil];
+            [self.sessions[2] setArray:objectsOrNil];
             [self.tableView reloadData];
         }
     } withProgressBlock:nil];
@@ -259,9 +311,23 @@
     KCSQuery* query4 = [KCSQuery queryOnField:@"time" withExactMatchForValue:@"Session IV (2:30PM - 3:30PM)"];
     [query4 addSortModifier:sortByTitle];
     [updateStore queryWithQuery:query4 withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
-        if (objectsOrNil) {
+        BOOL displayAlert = NO;
+        if (errorOrNil) {
+            @synchronized([KCSClient sharedClient])
+            {
+                if (!detectedError) {
+                    detectedError = YES;
+                    displayAlert = YES;
+                }
+            }
+            if (displayAlert) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Connection" message:@"There no internect connection available, please retry later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+            }
+        }
+        else {
             [self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
-            [self.sessions replaceObjectAtIndex:3 withObject:objectsOrNil];
+            [self.sessions[3] setArray:objectsOrNil];
             [self.tableView reloadData];
         }
     } withProgressBlock:nil];
@@ -281,5 +347,23 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+#pragma - mark User Delagets
 
+- (void)entity:(id<KCSPersistable>)entity fetchDidCompleteWithResult:(NSObject *)result
+{
+    KCSUser *user = [[KCSClient sharedClient] currentUser];
+    [user saveWithDelegate:self];
+}
+- (void)entity:(id<KCSPersistable>)entity fetchDidFailWithError:(NSError *)error
+{
+    NSLog(@"Error loading user: %d %@ %@", error.code, error.localizedDescription, error.localizedFailureReason);
+}
+-(void)entity:(id)entity operationDidCompleteWithResult:(NSObject *)result
+{
+    NSLog(@"User update complete");
+}
+-(void)entity:(id)entity operationDidFailWithError:(NSError *)error
+{
+    NSLog(@"Error loading user: %d %@ %@", error.code, error.localizedDescription, error.localizedFailureReason);    
+}
 @end

@@ -16,30 +16,23 @@
 #import "AttendeesViewController.h"
 #import "WriteUpdateViewController.h"
 
-#import <MapKit/MapKit.h>
-
 #define kAuthor @"_acl.creator"
 
-//@interface UpdateAnnotation : NSObject <MKAnnotation>
-//
-//@end
-//
-//@implementation UpdateAnnotation
-//
-//@end
 
 @interface AuthorViewController () {
     @private
     KCSCachedStore* _updateStore;
     KCSButton *_attendBtn;
     KCSButton *_unattendBtn;
+    KCSButton *_shareBtn;
+    KCSButton *_editBtn;
+    KCSButton *_deleteBtn;
 }
 @property (nonatomic) KCSGroup* grouping;
 @property (nonatomic) NSString* name;
 @end
 
 @implementation AuthorViewController
-//@synthesize author, image, grouping, name;
 @synthesize update, grouping, name;
 - (void) commonInit
 {
@@ -111,18 +104,19 @@
     _sessionDescriptionLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
     _sessionDescriptionLabel.text = update.description;
 }
-
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLoad
 {
-    [super viewWillAppear:animated];
+    [super viewDidLoad];
+    
+    //Kinvey use code: watch for network reachability to change so we can update the UI make a post able to send.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kKCSReachabilityChangedNotification object:nil];
     
     self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chalkboard.png"]];
     self.navigationItem.title = update.title;
     
     [self.navigationController setNavigationBarHidden:NO];
     
-    
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 270, 320, 200)];
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 270, 320, 115)];
     [footerView setBackgroundColor:[UIColor clearColor]];
     
     KCSUser *user = [[KCSClient sharedClient] currentUser];
@@ -143,32 +137,49 @@
     {
         [footerView addSubview:_attendBtn];
     }
-//    NSLog(@"%@", [update.attendees containsObject:user.kinveyObjectId] ? @"You are attending this session" : @"You are not attending this session yet");
     
     float editBtnY = 60;
     if ([[UIDevice currentDevice] systemVersion].floatValue >= 6)
-    {        
-        KCSButton *shareBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, 60, 280, 35)];
-        [shareBtn setTitle:@"Tell my friends" forState:UIControlStateNormal];
-        [shareBtn addTarget:self action:@selector(share:) forControlEvents:UIControlEventTouchUpInside];
-        [footerView addSubview:shareBtn];
+    {
+        _shareBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, 60, 280, 35)];
+        [_shareBtn setTitle:@"Tell my friends" forState:UIControlStateNormal];
+        [_shareBtn addTarget:self action:@selector(share:) forControlEvents:UIControlEventTouchUpInside];
+        [footerView addSubview:_shareBtn];
         editBtnY = 110;
     }
-
+    
     if ([update.meta.creatorId isEqualToString:[user getValueForAttribute:@"_id"]])
     {
-        KCSButton *editBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, editBtnY, 280, 35)];
-        [editBtn setTitle:@"Edit this session" forState:UIControlStateNormal];
-        [editBtn addTarget:self action:@selector(editSession:) forControlEvents:UIControlEventTouchUpInside];
-        [footerView addSubview:editBtn];
+        _editBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, editBtnY, 280, 35)];
+        [_editBtn setTitle:@"Edit this session" forState:UIControlStateNormal];
+        [_editBtn addTarget:self action:@selector(editSession:) forControlEvents:UIControlEventTouchUpInside];
+        [footerView addSubview:_editBtn];
         
-        KCSButton *deleteBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, editBtnY + 50, 280, 35) andColor:[UIColor redColor].darkerColor];
-        [deleteBtn setTitle:@"Delete this session" forState:UIControlStateNormal];
-        [deleteBtn addTarget:self action:@selector(deleteSession:) forControlEvents:UIControlEventTouchUpInside];
-        [footerView addSubview:deleteBtn];
+        _deleteBtn = [[KCSButton alloc] initWithFrame:CGRectMake(20, editBtnY + 50, 280, 35) andColor:[UIColor redColor].darkerColor];
+        [_deleteBtn setTitle:@"Delete this session" forState:UIControlStateNormal];
+        [_deleteBtn addTarget:self action:@selector(deleteSession:) forControlEvents:UIControlEventTouchUpInside];
+        [footerView addSubview:_deleteBtn];
+        
+        [footerView setFrame:CGRectMake(0, 270, 320, 200)];
     }
     
     self.tableView.tableFooterView = footerView;
+    
+    // Simulate reachabilty changing on view load to set to correct state
+    [self reachabilityChanged:nil];
+}
+- (void)viewDidUnload {
+    _sessionTitleLabel = nil;
+    _sessionLeaderLabel = nil;
+    _sessionLocationLabel = nil;
+    _sessionTimeLabel = nil;
+    _sessionAttendeesLabel = nil;
+    _sessionDescriptionLabel = nil;
+    [super viewDidUnload];
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     
     [self loadData];
     [self updateGravatar];
@@ -196,6 +207,7 @@
             
             [alert show];
             success = NO;
+            [update.attendees removeObject:[[KCSClient sharedClient].currentUser kinveyObjectId]];
         }
         else
         {
@@ -221,7 +233,8 @@
         [update.attendees removeObject:user.kinveyObjectId];
         
         [_updateStore saveObject:update withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
-            if (errorOrNil != nil) {
+            if (errorOrNil != nil)
+            {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
                                                                 message:@"Looks like something went wrong..."
                                                                delegate:nil
@@ -230,6 +243,7 @@
                 
                 [alert show];
                 success = NO;
+                [update.attendees addObject:user.kinveyObjectId];
             }
             else
             {
@@ -296,6 +310,17 @@
     }
 }
 
+#pragma mark - network
+- (void) reachabilityChanged:(NSNotification*) note
+{
+    BOOL network = [[[KCSClient sharedClient] networkReachability] isReachable];
+    _unattendBtn.enabled = network;
+    _attendBtn.enabled = network;
+    _shareBtn.enabled = network;
+    _editBtn.enabled = network;
+    _deleteBtn.enabled = network;
+}
+
 
 #pragma mark - Table view data source
 
@@ -310,41 +335,27 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger attendeesCell[] = {0,3};
-    NSIndexPath* attendeesIP = [[NSIndexPath alloc] initWithIndexes:attendeesCell
-                                                             length:2];
-    if (indexPath == attendeesIP) {
-        [self performSegueWithIdentifier:@"segueToAttendees" sender:tableView];
+    if (indexPath.section == 0 && indexPath.row == 4)
+    {
+        [self performSegueWithIdentifier:@"pushToAttendees" sender:tableView];
     }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.destinationViewController isKindOfClass:[AttendeesViewController class]]) {
-//        NSIndexPath* indexPath = [self.tableView indexPathForSelectedRow];
-//        KinveyFriendsUpdate* update = [self updateAtIndex:indexPath.row];
-    
-        //        [segue.destinationViewController setAuthor:[update.meta creatorId]];
+    if ([segue.destinationViewController isKindOfClass:[AttendeesViewController class]])
+    {
         [segue.destinationViewController setAttendees:update.attendees];
-    } else if ([segue.destinationViewController isKindOfClass:[WriteUpdateViewController class]])
+    }
+    else if ([segue.destinationViewController isKindOfClass:[WriteUpdateViewController class]])
     {
         [segue.destinationViewController setNewSession:NO];
         [segue.destinationViewController setUnconSession:update];
     }
-
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-- (void)viewDidUnload {
-    _sessionTitleLabel = nil;
-    _sessionLeaderLabel = nil;
-    _sessionLocationLabel = nil;
-    _sessionTimeLabel = nil;
-    _sessionAttendeesLabel = nil;
-    _sessionDescriptionLabel = nil;
-    [super viewDidUnload];
 }
 @end

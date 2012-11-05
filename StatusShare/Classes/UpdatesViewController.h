@@ -12,7 +12,7 @@
 @interface UpdatesCell : UITableViewCell 
 @end
 
-@interface UpdatesViewController : PullRefreshTableViewController <UITextFieldDelegate>
+@interface UpdatesViewController : PullRefreshTableViewController <UITextFieldDelegate, KCSPersistableDelegate, KCSEntityDelegate>
 
 - (void)removeUpdate:(KinveyFriendsUpdate *)update;
 

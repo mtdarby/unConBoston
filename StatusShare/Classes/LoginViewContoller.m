@@ -17,11 +17,8 @@
 @end
 
 @implementation LoginViewContoller
-@synthesize loginButton;
-@synthesize userNameTextField;
-@synthesize passwordTextField;
-@synthesize createAccountButton;
 @synthesize facebookLoginButton;
+@synthesize twitterLoginButton;
 
 - (void)viewDidLoad
 {
@@ -29,10 +26,6 @@
 }
 
 - (void)viewDidUnload {
-    [self setLoginButton:nil];
-    [self setUserNameTextField:nil];
-    [self setPasswordTextField:nil];
-    [self setCreateAccountButton:nil];
     [self setFacebookLoginButton:nil];
     [self setTwitterLoginButton:nil];
     [super viewDidUnload];
@@ -50,91 +43,94 @@
 }
 
 #pragma mark - TextField Stuff
-- (UIView*) button
-{
-    return self.loginButton;
-}
-      
-- (void) validate
-{
-    self.loginButton.enabled = self.userNameTextField.text.length > 0 && self.passwordTextField.text.length > 0; 
-}
+//
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+//{
+//    textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
+//    [self validate];
+//    return NO;
+//}
+//
+//- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+//{
+//    [self validate];
+//    return YES;
+//}
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    [self validate];
-    return NO;
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
-{
-    [self validate];
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [self validate];
-    if (textField == self.userNameTextField) {
-        [self.passwordTextField becomeFirstResponder];
-    } else {
-        [textField resignFirstResponder];
-        if (self.loginButton.enabled) {
-            [self login:self.loginButton];
-        }
-    }
-    return YES;
-}
-
+//- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//{
+//    [self validate];
+//    if (textField == self.userNameTextField) {
+//        [self.passwordTextField becomeFirstResponder];
+//    } else {
+//        [textField resignFirstResponder];
+//        if (self.loginButton.enabled) {
+//            [self login:self.loginButton];
+//        }
+//    }
+//    return YES;
+//}
+//
 
 #pragma mark - Actions
-- (void) disableButtons:(NSString*) message;
-{
-    self.loginButton.enabled = NO;
-    self.createAccountButton.enabled = NO; 
-    MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = message;
-}
+//- (void) disableButtons:(NSString*) message;
+//{
+//    self.loginButton.enabled = NO;
+//    self.createAccountButton.enabled = NO; 
+//    MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    hud.labelText = message;
+//}
 
-- (void) reenableButtons
-{
-    [self validate];
-    self.createAccountButton.enabled = YES;
-    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-}
+//- (void) reenableButtons
+//{
+//    [self validate];
+//    self.createAccountButton.enabled = YES;
+//    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+//}
 
 - (void) handeLogin:(NSError*)errorOrNil
 {
-    [self reenableButtons];
     if (errorOrNil != nil) {
         BOOL wasUserError = [errorOrNil domain] == KCSUserErrorDomain;
         NSString* title = wasUserError ? NSLocalizedString(@"Invalid Credentials", @"credentials error title") : NSLocalizedString(@"An error occurred.", @"Generic error message");
         NSString* message = wasUserError ? NSLocalizedString(@"Wrong username or password. Please check and try again.", @"credentials error message") : [errorOrNil localizedDescription];
+        
+        NSString *internetString= [[[errorOrNil userInfo] objectForKey:NSUnderlyingErrorKey] localizedDescription];
+        NSString *internetOffline = @"The internet connection appears to be offline";
+        NSRange isRange = [internetString rangeOfString:internetOffline options:NSCaseInsensitiveSearch];
+        if(isRange.location == 0) {
+            message = internetOffline;
+            title = @"No Connection";
+        } else {
+            NSRange isSpacedRange = [internetString rangeOfString:internetOffline options:NSCaseInsensitiveSearch];
+            if(isSpacedRange.location != NSNotFound) {
+                message = internetOffline;
+                title = @"No Connection";
+            }
+        }
+        
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title
                                                         message:message                                                           delegate:self
                                               cancelButtonTitle:NSLocalizedString(@"OK", @"OK")
                                               otherButtonTitles:nil];
         [alert show];
-    } else {
-        //clear fields on success
-        self.userNameTextField.text = @"";
-        self.passwordTextField.text = @"";
-        //logged in went okay - go to the table
+    }
+    else
+    {
         [self performSegueWithIdentifier:@"toTable" sender:self];
     }
- 
+
 }
 
-- (IBAction)login:(id)sender
-{
-    [self disableButtons:NSLocalizedString(@"Logging in", @"Logging In Message")];
-    
-    ///Kinvey-Use code: login with the typed credentials
-    [KCSUser loginWithUsername:self.userNameTextField.text password:self.passwordTextField.text withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
-        [self handeLogin:errorOrNil];
-    }];
-}
+//- (IBAction)login:(id)sender
+//{
+//    [self disableButtons:NSLocalizedString(@"Logging in", @"Logging In Message")];
+//    
+//    ///Kinvey-Use code: login with the typed credentials
+//    [KCSUser loginWithUsername:self.userNameTextField.text password:self.passwordTextField.text withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+//        [self handeLogin:errorOrNil];
+//    }];
+//}
 
 - (IBAction)loginWithFacebook:(id)sender
 {
@@ -169,25 +165,22 @@
                                 accessDictionary:accessDictOrNil
                              withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
                                  if (errorOrNil) {
-                                     //handle error
                                      NSLog(@"%@", errorOrNil);
                                  }
                                  [self handeLogin:errorOrNil];
                              }];
         }
         NSLog(@"%@", errorOrNil);
+        if (errorOrNil != nil) {
+            [self handeLogin:errorOrNil];
+        }
     }];
     NSLog(@"I tried to login with Twitter");
-    
-    
-//    [KCSUser loginWithSocialIdentity:KCSSocialIDTwitter
-//                    accessDictionary:{ KCSUserAccessTokenKey : <# Twitter OAuth Token #>, KCSUserAccessTokenSecretKey : <# Twitter OAuth Token Secret #>}
-//                 withCompletionBlock:<# completion block #>];
 }
 
-      
-- (IBAction)createAccount:(id)sender
-{
-    [self performSegueWithIdentifier:@"pushToCreateAccount" sender:self];
-}
+//      
+//- (IBAction)createAccount:(id)sender
+//{
+//    [self performSegueWithIdentifier:@"pushToCreateAccount" sender:self];
+//}
 @end

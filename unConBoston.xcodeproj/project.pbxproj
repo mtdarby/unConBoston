@@ -34,7 +34,6 @@
 		27E6B35B159E3EFD00280BC7 /* UIColor+KinveyHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B35A159E3EFD00280BC7 /* UIColor+KinveyHelpers.m */; };
 		27E6B35E159E3F0A00280BC7 /* KCSButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B35D159E3F0A00280BC7 /* KCSButton.m */; };
 		27E6B361159E3F2600280BC7 /* KinveyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27E6B35F159E3F2600280BC7 /* KinveyKit.framework */; };
-		27E6B367159E3F6B00280BC7 /* CreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B364159E3F6B00280BC7 /* CreateAccountViewController.m */; };
 		27E6B368159E3F6B00280BC7 /* FormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B366159E3F6B00280BC7 /* FormViewController.m */; };
 		27E6B36B159E3F7A00280BC7 /* LoginViewContoller.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B36A159E3F7900280BC7 /* LoginViewContoller.m */; };
 		27E6B372159E407200280BC7 /* UpdateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B36D159E407200280BC7 /* UpdateCell.m */; };
@@ -46,12 +45,8 @@
 		27E6B383159E40A600280BC7 /* MD5Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 27E6B381159E40A600280BC7 /* MD5Helpers.m */; };
 		27E6B386159E40E500280BC7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B384159E40E500280BC7 /* InfoPlist.strings */; };
 		27E6B390159E41D500280BC7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27E6B38F159E41D500280BC7 /* QuartzCore.framework */; };
-		27E6B3A815A213C100280BC7 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3A615A213B800280BC7 /* iTunesArtwork */; };
-		27E6B3B215A2141B00280BC7 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3AB15A2141B00280BC7 /* Icon-72.png */; };
-		27E6B3B315A2141B00280BC7 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3AC15A2141B00280BC7 /* Icon-72@2x.png */; };
 		27E6B3B415A2141B00280BC7 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3AD15A2141B00280BC7 /* Icon.png */; };
 		27E6B3B515A2141B00280BC7 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3AE15A2141B00280BC7 /* Icon@2x.png */; };
-		27E6B3B615A2141B00280BC7 /* ItunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3AF15A2141B00280BC7 /* ItunesArtwork.png */; };
 		27E6B3BB15A2172200280BC7 /* grid_blank.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3B915A2172200280BC7 /* grid_blank.png */; };
 		27E6B3BC15A2172200280BC7 /* grid_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27E6B3BA15A2172200280BC7 /* grid_blank@2x.png */; };
 		44E5BB9A1E4A43B48FCE2A5B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D359CEE3AA654D538EC47440 /* Foundation.framework */; };
@@ -119,8 +114,6 @@
 		27E6B35C159E3F0A00280BC7 /* KCSButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KCSButton.h; path = Classes/KCSButton.h; sourceTree = "<group>"; };
 		27E6B35D159E3F0A00280BC7 /* KCSButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KCSButton.m; path = Classes/KCSButton.m; sourceTree = "<group>"; };
 		27E6B35F159E3F2600280BC7 /* KinveyKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KinveyKit.framework; sourceTree = "<group>"; };
-		27E6B363159E3F6B00280BC7 /* CreateAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CreateAccountViewController.h; path = Classes/CreateAccountViewController.h; sourceTree = "<group>"; };
-		27E6B364159E3F6B00280BC7 /* CreateAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CreateAccountViewController.m; path = Classes/CreateAccountViewController.m; sourceTree = "<group>"; };
 		27E6B365159E3F6B00280BC7 /* FormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FormViewController.h; path = Classes/FormViewController.h; sourceTree = "<group>"; };
 		27E6B366159E3F6B00280BC7 /* FormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FormViewController.m; path = Classes/FormViewController.m; sourceTree = "<group>"; };
 		27E6B369159E3F7900280BC7 /* LoginViewContoller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginViewContoller.h; path = Classes/LoginViewContoller.h; sourceTree = "<group>"; };
@@ -141,12 +134,8 @@
 		27E6B381159E40A600280BC7 /* MD5Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MD5Helpers.m; path = Classes/MD5Helpers.m; sourceTree = "<group>"; };
 		27E6B385159E40E500280BC7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		27E6B38F159E41D500280BC7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		27E6B3A615A213B800280BC7 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
-		27E6B3AB15A2141B00280BC7 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		27E6B3AC15A2141B00280BC7 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		27E6B3AD15A2141B00280BC7 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		27E6B3AE15A2141B00280BC7 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		27E6B3AF15A2141B00280BC7 /* ItunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ItunesArtwork.png; sourceTree = "<group>"; };
 		27E6B3B915A2172200280BC7 /* grid_blank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grid_blank.png; sourceTree = "<group>"; };
 		27E6B3BA15A2172200280BC7 /* grid_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grid_blank@2x.png"; sourceTree = "<group>"; };
 		7C2A411236F24BF68A700F43 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -308,8 +297,6 @@
 				27E6B366159E3F6B00280BC7 /* FormViewController.m */,
 				27E6B369159E3F7900280BC7 /* LoginViewContoller.h */,
 				27E6B36A159E3F7900280BC7 /* LoginViewContoller.m */,
-				27E6B363159E3F6B00280BC7 /* CreateAccountViewController.h */,
-				27E6B364159E3F6B00280BC7 /* CreateAccountViewController.m */,
 			);
 			name = "Login and Signup";
 			sourceTree = "<group>";
@@ -383,16 +370,12 @@
 				27E6B348159E3EC800280BC7 /* unConBoston-Prefix.pch */,
 				27E6B349159E3EC800280BC7 /* unConBoston-Info.plist */,
 				27E6B384159E40E500280BC7 /* InfoPlist.strings */,
-				27E6B3A615A213B800280BC7 /* iTunesArtwork */,
 				2721B016160BA6080056A803 /* Default.png */,
 				2721B017160BA6080056A803 /* Default@2x.png */,
 				2721B015160BA6080056A803 /* Default-568h@2x.png */,
-				27E6B3AB15A2141B00280BC7 /* Icon-72.png */,
-				27E6B3AC15A2141B00280BC7 /* Icon-72@2x.png */,
 				27E6B3AD15A2141B00280BC7 /* Icon.png */,
 				27E6B3AE15A2141B00280BC7 /* Icon@2x.png */,
 				C420007C16398C41000733C0 /* logo-mini.png */,
-				27E6B3AF15A2141B00280BC7 /* ItunesArtwork.png */,
 				27E6B3B915A2172200280BC7 /* grid_blank.png */,
 				27E6B3BA15A2172200280BC7 /* grid_blank@2x.png */,
 				C420007716398A60000733C0 /* chalkboard.png */,
@@ -463,12 +446,8 @@
 				27E6B350159E3EC800280BC7 /* lock.png in Resources */,
 				27E6B352159E3EC800280BC7 /* unlock.png in Resources */,
 				27E6B386159E40E500280BC7 /* InfoPlist.strings in Resources */,
-				27E6B3A815A213C100280BC7 /* iTunesArtwork in Resources */,
-				27E6B3B215A2141B00280BC7 /* Icon-72.png in Resources */,
-				27E6B3B315A2141B00280BC7 /* Icon-72@2x.png in Resources */,
 				27E6B3B415A2141B00280BC7 /* Icon.png in Resources */,
 				27E6B3B515A2141B00280BC7 /* Icon@2x.png in Resources */,
-				27E6B3B615A2141B00280BC7 /* ItunesArtwork.png in Resources */,
 				27E6B3BB15A2172200280BC7 /* grid_blank.png in Resources */,
 				27E6B3BC15A2172200280BC7 /* grid_blank@2x.png in Resources */,
 				272EF17815E2B31E008E3F68 /* globe.png in Resources */,
@@ -496,7 +475,6 @@
 				27E6B351159E3EC800280BC7 /* main.m in Sources */,
 				27E6B35B159E3EFD00280BC7 /* UIColor+KinveyHelpers.m in Sources */,
 				27E6B35E159E3F0A00280BC7 /* KCSButton.m in Sources */,
-				27E6B367159E3F6B00280BC7 /* CreateAccountViewController.m in Sources */,
 				27E6B368159E3F6B00280BC7 /* FormViewController.m in Sources */,
 				27E6B36B159E3F7A00280BC7 /* LoginViewContoller.m in Sources */,
 				27E6B372159E407200280BC7 /* UpdateCell.m in Sources */,
@@ -604,7 +582,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Michael Katz (5WT935WCFL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -624,7 +602,7 @@
 				);
 				PRODUCT_NAME = unConBoston;
 				PROVISIONING_PROFILE = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B31BE21B-A617-41B2-9328-8BE65755CC65";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -633,6 +611,8 @@
 		27E6B2E2159E36D000280BC7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Michelle Darby (S85EFF5ZRU)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -651,6 +631,8 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = unConBoston;
+				PROVISIONING_PROFILE = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75348E7B-CD4A-47BF-B65B-F3376019C8A0";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

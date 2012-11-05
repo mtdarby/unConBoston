@@ -52,6 +52,8 @@
     //Kinvey use code: watch for network reachability to change so we can update the UI make a post able to send. 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kKCSReachabilityChangedNotification object:nil];
     
+    self.scrollView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Default-568h@2x.png"]];
+    
     sessionDescription.layer.cornerRadius = 8.0f;
     sessionDescription.clipsToBounds = YES;
     sessionDescription.layer.borderColor = [[[UIColor grayColor] colorWithAlphaComponent:0.5] CGColor];
@@ -75,6 +77,9 @@
                      @"Session III (1:15PM - 2:15PM)",
                      @"Session IV (2:30PM - 3:30PM)",
                      nil];
+
+//    NSLog(@"Title: %f", sessionTitle.frame.origin.y);
+//    NSLog(@"Description: %f", .frame.origin.y);
 }
 
 - (void)viewDidUnload
@@ -150,6 +155,11 @@
     if (_activeField == nil) {
         CGPoint scrollPoint = CGPointMake(0.0, 180.0);
         [scrollView setContentOffset:scrollPoint animated:YES];
+    } else {
+        if ([[UIScreen mainScreen] bounds].size.height == 568) {
+            CGPoint scrollPoint = CGPointMake(0.0, 86.0);
+            [scrollView setContentOffset:scrollPoint animated:NO];
+        }
     }
 }
 
@@ -158,13 +168,19 @@
     UIEdgeInsets contentInsets = UIEdgeInsetsZero;
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
+    if ([[UIScreen mainScreen] bounds].size.height == 568) {
+        CGPoint scrollPoint = CGPointMake(0.0, 86.0);
+        [scrollView setContentOffset:scrollPoint animated:NO];
+    }
 }
 
 #pragma mark - Text Field
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     _activeField = textField;
-    [self createPickerView];
+    if (textField.tag == sessionTime.tag) {
+        [self createPickerView];
+    }
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField

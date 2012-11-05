@@ -18,14 +18,10 @@
     //Kinvey use code: You'll need to create an app on the backend and initialize it here:
     //http://docs.kinvey.com/ios-developers-guide.html#Initializing_Programmatically
     
-//    NSDictionary *options = @{ KCS_PUSH_IS_ENABLED_KEY : @"YES",
-//    KCS_PUSH_KEY_KEY : @"2l-5BkPkSe6fkf2IHeUbyg",
-//    KCS_PUSH_SECRET_KEY : @"4MV50jGcQl-ik0B0TWjd7Q",
-//    KCS_PUSH_MODE_KEY : KCS_PUSH_DEBUG,
-//    KCS_TWITTER_CLIENT_KEY : @"QTyGt9aQpeZLKJoTauRjnw",
-//    KCS_TWITTER_CLIENT_SECRET : @"yUd8JGhUXQNUlHfZOFNaKpmYJcwAC3vJtbJHNarINY"};
-    
-    NSDictionary *options = @{
+    NSDictionary *options = @{ KCS_PUSH_IS_ENABLED_KEY : @"YES",
+    KCS_PUSH_KEY_KEY : @"2l-5BkPkSe6fkf2IHeUbyg",
+    KCS_PUSH_SECRET_KEY : @"4MV50jGcQl-ik0B0TWjd7Q",
+    KCS_PUSH_MODE_KEY : KCS_PUSH_DEBUG,
     KCS_TWITTER_CLIENT_KEY : @"QTyGt9aQpeZLKJoTauRjnw",
     KCS_TWITTER_CLIENT_SECRET : @"yUd8JGhUXQNUlHfZOFNaKpmYJcwAC3vJtbJHNarINY"};
     
@@ -43,7 +39,8 @@
 #pragma - mark Push Methods
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[KCSPush sharedPush] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-    // Additional registration goes here (if neeeded)
+    
+    
 }
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[KCSPush sharedPush] application:application didReceiveRemoteNotification:userInfo];
